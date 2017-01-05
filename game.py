@@ -4,6 +4,7 @@ from os import listdir
 from PIL import Image, ImageTk
 from random import randint
 from time import sleep
+from main import SETTINGS_DIR, NEXT, BACK, BLANK
 import sys
 import random
 import ttk
@@ -20,11 +21,6 @@ class Game:
     def __init__(self):
         self.root_frame = Tk()
         self.root_frame.attributes("-zoomed", True)
-        self.mainframe = ttk.Frame(self.root_frame)
-        self.mainframe.grid(column=0, row=0, sticky=(N,W,S,E))
-        self.root_frame.bind("<Escape>", self.exit_app())
-        self.mainframe.columnconfigure(0, weight=1)
-        self.mainframe.rowconfigure(0, weight=1)
         self.init_gpio()
 
     def init_gpio(self):
@@ -76,26 +72,46 @@ class Game:
 
     def show_images(self, photo_list):
         c=r=0;
+        self.images[:] = []
         for img in photo_list:
             photo = self.get_image(img)
-            label = ttk.Label(image=photo).grid(column=c,row=r, padx=(100,100), pady=(100,100))
+            ttk.Label(image=photo).grid(column=c,row=r, padx=(100,100), pady=(100,100))
             self.images.append(photo) # dodatna referenca kako nebi garbage collector uništio sliku
             c+=1
             if(c%4==0):
                 r+=1
                 c=0
 
-    def show_game_list(self):
+    def show_game_list(self, page):
+        self.images = []
+        blank_img = self.get_image(SETTINGS_DIR + BLANK)
         self.games = self.get_all_games()
         self.games.sort()
         c=r=0
-        for i in range(0,8):
-            label = ttk.Label(text=self.games[i], background='yellow').grid(column=c, row=r, padx=(200,200), pady=(150,150))
+        for i in range(page*6,page*6+6):
+            if(i>=len(self.games)):
+               label = ttk.Label(image=blank_img).grid(column=c, row=r, padx=(100,100), pady=(100,100))
+
+            else:
+               label = ttk.Label(text=self.games[i], background='yellow').grid(column=c, row=r, padx=(200,200), pady=(150,150))
             c+=1
 
             if(c%4==0):
                   r+=1
                   c=0
+
+        back_img = self.get_image(SETTINGS_DIR + BACK)
+        next_img = self.get_image(SETTINGS_DIR + NEXT)
+
+        if(page==0):
+            label = ttk.Label(image=blank_img).grid(column=c, row=r, padx=(100,100), pady=(100,100))
+            labelb = ttk.Label(text="RANDOM", background="yellow").grid(column=2, row=1, padx=(200,200), pady=(150,150))
+        else:
+            labelb = ttk.Label(image=back_img).grid(column=2, row=1, padx=(100,100), pady=(100,100))
+            self.images.append(back_img)
+
+        labeln = ttk.Label(image=next_img).grid(column=3, row=1, padx=(100,100), pady=(100,100))
+        self.images.append(next_img)
         return self.games
 
     def exit_app(self):
@@ -105,7 +121,6 @@ class Game:
 
 
     def replace_image(self, position, path):
-        print "uso"
         if(position<4):
             c=position
             r=0
@@ -113,9 +128,14 @@ class Game:
             c=position-4
             r=1
 
+        temp = self.images[position]
+
         iks = self.get_image(path)
         label = ttk.Label(image=iks).grid(column=c,row=r, padx=(100,100), pady=(100,100))
         self.images[position] = iks
+        sleep(2)
+        label = ttk.Label(image=temp).grid(column=c,row=r, padx=(100,100), pady=(100,100))
+        self.images[position] = temp
 
     def create_empty_labels(self):
         self.labels = []
