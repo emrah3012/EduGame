@@ -17,6 +17,7 @@ class Game:
     ANSWER_SLEEP_TIME = 5
     GAMES_DIR = "Igre/"
     counter = 0
+    labels = []
 
     def __init__(self):
         self.root_frame = Tk()
@@ -61,7 +62,6 @@ class Game:
 
         return photo_list
 
-
     def show_answer(self, answer):
         photo_list = []
         while len(photo_list) < 8:
@@ -71,29 +71,60 @@ class Game:
         sleep(self.ANSWER_SLEEP_TIME)
 
     def show_images(self, photo_list):
+        self.create_empty_labels()
         c=r=0;
         self.images[:] = []
         for img in photo_list:
             photo = self.get_image(img)
-            ttk.Label(image=photo).grid(column=c,row=r, padx=(100,100), pady=(100,100))
+            label = ttk.Label()
+            label.grid(column=c,row=r, padx=(100,100), pady=(100,100))
+            label.configure(image = photo)
+            self.labels.append(label)
             self.images.append(photo) # dodatna referenca kako nebi garbage collector uništio sliku
             c+=1
             if(c%4==0):
                 r+=1
                 c=0
 
+    def show_menu(self):
+        self.create_empty_labels()
+        self.images = []
+        menu_options = ["Nova igra", "Rezultati", "Postavke", "Izlaz"]
+        c=r=i=0
+        for item in menu_options:
+            txt = menu_options[i]
+            label = self.labels[i]
+            label.configure(text=txt)
+            label.grid(column=c, row=r, padx=(200,200), pady=(150,150))
+
+            i+=1
+            c+=1
+
+            if(c%4==0):
+                  r+=1
+                  c=0
+
+    #def change_label(self, position, c, r, txt, img):
+        #label = self.labels[position]
+        #label.configure(text=txt, image=img)
+        #label.grid(column=c, row=r, padx=(200,200), pady=(150,150))
+
     def show_game_list(self, page):
+        self.create_empty_labels()
         self.images = []
         blank_img = self.get_image(SETTINGS_DIR + BLANK)
         self.games = self.get_all_games()
         self.games.sort()
         c=r=0
         for i in range(page*6,page*6+6):
+            label = self.labels[i-page*6]
             if(i>=len(self.games)):
-               label = ttk.Label(image=blank_img).grid(column=c, row=r, padx=(100,100), pady=(100,100))
-
+              label.configure(text="", image=None)
             else:
-               label = ttk.Label(text=self.games[i], background='yellow').grid(column=c, row=r, padx=(200,200), pady=(150,150))
+              label.configure(text=self.games[i])
+              label.grid(column=c, row=r, padx=(200,200), pady=(150,150))
+
+            self.labels.append(label)
             c+=1
 
             if(c%4==0):
@@ -103,15 +134,31 @@ class Game:
         back_img = self.get_image(SETTINGS_DIR + BACK)
         next_img = self.get_image(SETTINGS_DIR + NEXT)
 
+        label = ttk.Label()
         if(page==0):
-            label = ttk.Label(image=blank_img).grid(column=c, row=r, padx=(100,100), pady=(100,100))
-            labelb = ttk.Label(text="RANDOM", background="yellow").grid(column=2, row=1, padx=(200,200), pady=(150,150))
+            label.configure(text="RANDOM", image=None)
+            label.grid(column=2, row=1, padx=(200,200), pady=(150,150))
         else:
-            labelb = ttk.Label(image=back_img).grid(column=2, row=1, padx=(100,100), pady=(100,100))
+            label.configure(image=back_img)
+            label.grid(column=2, row=1, padx=(100,100), pady=(100,100))
             self.images.append(back_img)
 
-        labeln = ttk.Label(image=next_img).grid(column=3, row=1, padx=(100,100), pady=(100,100))
-        self.images.append(next_img)
+
+        self.labels.append(label)
+
+        label = ttk.Label()
+
+        if(len(self.games)>page*6+6):
+            label.configure(image=next_img)
+            label.grid(column=3, row=1, padx=(100,100), pady=(100,100))
+            self.images.append(next_img)
+        else:
+            label.configure(text="", image=None)
+            label.grid(column=3, row=1, padx=(100,100), pady=(100,100))
+
+
+        self.labels.append(label)
+
         return self.games
 
     def exit_app(self):
@@ -129,40 +176,42 @@ class Game:
             r=1
 
         temp = self.images[position]
-
         iks = self.get_image(path)
-        label = ttk.Label(image=iks).grid(column=c,row=r, padx=(100,100), pady=(100,100))
-        self.images[position] = iks
+
+        label = self.labels[position]
+        self.images[position]=iks
+        label.destroy()
+        label = ttk.Label(image = iks)
+        label.grid(column=c, row=r, padx=(100,100), pady=(100,100))
+
         sleep(2)
-        label = ttk.Label(image=temp).grid(column=c,row=r, padx=(100,100), pady=(100,100))
-        self.images[position] = temp
+
+        label.configure(image=temp)
+        self.images[position]=temp
+
 
     def create_empty_labels(self):
+        if(self.labels!=None and len(self.labels)>0):
+            for label in self.labels:
+                label.destroy()
+
         self.labels = []
-        self.textVars = []
-        c=r=0
+
         for i in range(0,8):
-            s = str(i) + "jfadjjjjjjjjjjjjjj"
-            label = ttk.Label(textvariable=s, background='blue').grid(column=c,row=r, padx=(200,200), pady=(100,100))
+            label = ttk.Label()
             self.labels.append(label)
-            self.textVars.append(s)
-            c+=1
 
-            if(c%4==0):
-                  r+=1
-                  c=0
+    #def play_game(self,i):
+        #self.images = self.get_images(Game.GAMES_DIR + self.games[i] + "/")
 
-    def play_game(self,i):
-        self.images = self.get_images(Game.GAMES_DIR + self.games[i] + "/")
-
-        c=r=0
-        for img in self.images:
-            label = ttk.Label(image = img).grid(column=c,row=r, padx=(100,100), pady=(100,100))
-            self.images.append(img) # dodatna referenca kako nebi garbage collector uništio sliku
-            c+=1
-            if(c%4==0):
-                r+=1
-                c=0
+        #c=r=0
+        #for img in self.images:
+            #label = ttk.Label(image = img).grid(column=c,row=r, padx=(100,100), pady=(100,100))
+            #self.images.append(img) # dodatna referenca kako nebi garbage collector uništio sliku
+            #c+=1
+            #if(c%4==0):
+                #r+=1
+                #c=0
 
     def toogle_fullscreen(self, state):
         self.root_frame.attributes("-fullscreen", state)
