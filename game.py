@@ -4,7 +4,7 @@ from os import listdir
 from PIL import Image, ImageTk
 from random import randint
 from time import sleep
-from main import SETTINGS_DIR, NEXT, BACK, BLANK
+from main import SETTINGS_DIR, NEXT, BACK
 import sys
 import random
 import ttk
@@ -21,6 +21,7 @@ class Game:
 
     def __init__(self):
         self.root_frame = Tk()
+        self.root_frame.title("Edu Game")
         self.root_frame.attributes("-zoomed", True)
         self.init_gpio()
 
@@ -112,7 +113,7 @@ class Game:
     def show_game_list(self, page):
         self.create_empty_labels()
         self.images = []
-        blank_img = self.get_image(SETTINGS_DIR + BLANK)
+        #blank_img = self.get_image(SETTINGS_DIR + BLANK)
         self.games = self.get_all_games()
         self.games.sort()
         c=r=0
