@@ -41,10 +41,14 @@ def my_callback(channel):
                 key = gpio_to_use(channel) - 1
                 print key
                 if(key == 8):
-                    if((ukupni_bodovi>0) and (game_state == STATE_PLAYING_GAME)):
-                        save_score()
-                    game_state = STATE_SHOWING_MENU
-                    show_start_menu()
+                    if (game_state == STATE_PLAYING_GAME):
+                        game_state = STATE_SHOWING_GAMES
+                        if(ukupni_bodovi>0):
+                            save_score()
+                        my_game.show_game_list(current_game_page)
+                    else:
+                        game_state = STATE_SHOWING_MENU
+                        show_start_menu()
                 elif(game_state == STATE_PLAYING_GAME):
                     sound = Sound()
                     if(answer == key ):
@@ -59,13 +63,11 @@ def my_callback(channel):
                             play_game(last_game_key)
                         else:
                             random = randint(0,len(game_list)-1)
-                            print "Random ",random
-                            print "game list ",len(game_list)
                             play_game(random)
                     else:
                         sound.sound_wrong()
                         my_game.replace_image(key, SETTINGS_DIR + IKS)
-                        print "wrong"
+                        #print "wrong"
                         if (bodovi == 0):
                             bodovi = 0
                         else:
@@ -89,7 +91,7 @@ def my_callback(channel):
                             current_game_page = current_game_page + 1
                             my_game.show_game_list(current_game_page)
                     else:
-                        play_game(key)
+                        play_game(key + (6*current_game_page))
                         print "page ",current_game_page
 
                 elif(game_state == STATE_SHOWING_MENU):
@@ -104,6 +106,7 @@ def play_game(key):
             bodovi = 8
             game_state = STATE_PLAYING_GAME
             last_game_key = key
+            print "key ",key
             photo_list = my_game.make_game_image(game_list[key])
             answer = randint(0, 7)
             my_game.show_answer(photo_list[answer])
