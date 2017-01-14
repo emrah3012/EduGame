@@ -23,6 +23,8 @@ class Game:
         self.root_frame = Tk()
         self.root_frame.title("Edu Game")
         self.root_frame.attributes("-zoomed", True)
+        #self.root_frame.config(cursor="none")
+        #self.toogle_fullscreen(True)
         self.init_gpio()
 
     def init_gpio(self):
@@ -78,7 +80,7 @@ class Game:
         for img in photo_list:
             photo = self.get_image(img)
             label = ttk.Label()
-            label.grid(column=c,row=r, padx=(100,100), pady=(100,100))
+            label.grid(column=c,row=r, padx=(22,22), pady=(80,80))
             label.configure(image = photo)
             self.labels.append(label)
             self.images.append(photo) # dodatna referenca kako nebi garbage collector uništio sliku
@@ -96,7 +98,7 @@ class Game:
             txt = menu_options[i]
             label = self.labels[i]
             label.configure(text=txt)
-            label.grid(column=c, row=r, padx=(200,200), pady=(150,150))
+            label.grid(column=c, row=r, padx=(150,150), pady=(150,150))
 
             i+=1
             c+=1
@@ -123,7 +125,7 @@ class Game:
               label.configure(text="", image=None)
             else:
               label.configure(text=self.games[i])
-              label.grid(column=c, row=r, padx=(200,200), pady=(150,150))
+              label.grid(column=c, row=r, padx=(150,150), pady=(150,150))
 
             self.labels.append(label)
             c+=1
@@ -138,10 +140,10 @@ class Game:
         label = ttk.Label()
         if(page==0):
             label.configure(text="RANDOM", image=None)
-            label.grid(column=2, row=1, padx=(200,200), pady=(150,150))
+            label.grid(column=2, row=1, padx=(150,150), pady=(150,150))
         else:
             label.configure(image=back_img)
-            label.grid(column=2, row=1, padx=(100,100), pady=(100,100))
+            label.grid(column=2, row=1, padx=(22,22), pady=(80,80))
             self.images.append(back_img)
 
 
@@ -151,11 +153,11 @@ class Game:
 
         if(len(self.games)>page*6+6):
             label.configure(image=next_img)
-            label.grid(column=3, row=1, padx=(100,100), pady=(100,100))
+            label.grid(column=3, row=1, padx=(22,22), pady=(80,80))
             self.images.append(next_img)
         else:
             label.configure(text="", image=None)
-            label.grid(column=3, row=1, padx=(100,100), pady=(100,100))
+            label.grid(column=3, row=1, padx=(22,22), pady=(80,80))
 
 
         self.labels.append(label)
@@ -183,7 +185,7 @@ class Game:
         self.images[position]=iks
         label.destroy()
         label = ttk.Label(image = iks)
-        label.grid(column=c, row=r, padx=(100,100), pady=(100,100))
+        label.grid(column=c, row=r, padx=(22,22), pady=(80,80))
 
         sleep(2)
 

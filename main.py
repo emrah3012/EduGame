@@ -2,6 +2,7 @@
 from game import *
 from sound import *
 import os
+import time
 
 run = True
 global my_game, game_list, game_state, answer, bodovi, last_game_key
@@ -99,14 +100,15 @@ def my_callback(channel):
                         game_list=my_game.show_game_list(current_game_page)
                         game_state = STATE_SHOWING_GAMES
                     elif(key == 3):
-                        os.system("sudo shutdown -h now")
+                        print "GASIM"
+                        #os.system("sudo shutdown -h now")
 
 def play_game(key):
             global answer, last_game_key, game_state, bodovi
             bodovi = 8
             game_state = STATE_PLAYING_GAME
             last_game_key = key
-            print "key ",key
+            print "Key ",key
             photo_list = my_game.make_game_image(game_list[key])
             answer = randint(0, 7)
             my_game.show_answer(photo_list[answer])
@@ -119,8 +121,18 @@ def show_start_menu():
 
 def save_score():
     global ukupni_bodovi
-    hisc=open(SETTINGS_DIR + FILE_SCORE,"w")
-    hisc.write("Ukupni bodovi " + str(ukupni_bodovi) + "\n")
+
+    localtime = time.asctime(time.localtime(time.time()))
+
+    #citanje zadnje linije u file-u tj koliko korisnika je uneseno
+    hisc=open(SETTINGS_DIR + FILE_SCORE,"r")
+    igrac = int(hisc.readlines()[-1]) + 1
+    hisc.close()
+
+    #append - dodavanje na kraj file-a novi rezultat
+    hisc=open(SETTINGS_DIR + FILE_SCORE,"a")
+    hisc.write("\nIgrac " + str(igrac) + ": " + str(ukupni_bodovi) + "\nVrijeme: " + str(localtime) + "\n")
+    hisc.write(str(igrac))
     hisc.close()
 
 def main():
