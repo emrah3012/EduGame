@@ -4,7 +4,7 @@ from os import listdir
 from PIL import Image, ImageTk
 from random import randint
 from time import sleep
-from main import SETTINGS_DIR, NEXT, BACK
+from main import SETTINGS_DIR,FILE_SCORE, NEXT, BACK
 import sys
 import random
 import ttk
@@ -18,6 +18,7 @@ class Game:
     GAMES_DIR = "Igre/"
     counter = 0
     labels = []
+    len_rezz = 0
 
     def __init__(self):
         self.root_frame = Tk()
@@ -115,7 +116,7 @@ class Game:
     def show_game_list(self, page):
         self.create_empty_labels()
         self.images = []
-        #blank_img = self.get_image(SETTINGS_DIR + BLANK)
+
         self.games = self.get_all_games()
         self.games.sort()
         c=r=0
@@ -239,5 +240,77 @@ class Game:
 
     def get_all_games(self):
         return listdir(Game.GAMES_DIR);
+
+    def show_result(self, page):
+        self.create_empty_labels()
+        global len_rezz
+        self.images = []
+        igrac = ""
+        brojac = 0
+        self.menu_options = []
+
+        hisc=open(SETTINGS_DIR + FILE_SCORE,"r")
+        for line in hisc:
+            if(brojac==0):
+                brojac = brojac + 1
+            elif(brojac==1):
+                igrac = igrac + line
+                brojac = brojac + 1
+            elif(brojac==2):
+                igrac = igrac + line
+                self.menu_options.append(igrac)
+                brojac = 0
+                igrac = ""
+        hisc.close()
+        len_rezz = len(self.menu_options)
+        j = page*6 + 6
+        c=r=i=k=0
+        for item in self.menu_options:
+            if(i>=page*6 and i<j):
+                if(i>len(self.menu_options)-1):
+                    continue
+                else:
+                    txt = self.menu_options[i]
+                    label = self.labels[k]
+                    label.configure(text=txt)
+                    label.grid(column=c, row=r, padx=(60,60), pady=(150,150))
+
+                    i+=1
+                    c+=1
+                    k+=1
+
+                    if(c%4==0):
+                          r+=1
+                          c=0
+            elif(i>j):
+                break
+            else:
+                i+=1
+
+        back_img = self.get_image(SETTINGS_DIR + BACK)
+        next_img = self.get_image(SETTINGS_DIR + NEXT)
+
+        label = ttk.Label()
+
+        if(page==0):
+            label.configure(text="")
+            label.grid(column=2, row=1, padx=(60,60), pady=(150,150))
+        else:
+            label.configure(image=back_img)
+            label.grid(column=2, row=1, padx=(22,22), pady=(80,80))
+            self.images.append(back_img)
+
+        if(j>len(self.menu_options)-1):
+            label.configure(text="")
+            label.grid(column=3, row=1, padx=(60,60), pady=(150,150))
+        else:
+            label.configure(image=next_img)
+            label.grid(column=3, row=1, padx=(22,22), pady=(80,80))
+            self.images.append(next_img)
+
+        self.labels.append(label)
+
+
+
 
 
