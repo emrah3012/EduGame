@@ -18,14 +18,13 @@ class Game:
     GAMES_DIR = "Igre/"
     counter = 0
     labels = []
-    len_rezz = 0
 
     def __init__(self):
         self.root_frame = Tk()
         self.root_frame.title("Edu Game")
         self.root_frame.attributes("-zoomed", True)
-        #self.root_frame.config(cursor="none")
-        #self.toogle_fullscreen(True)
+        self.root_frame.config(cursor="none")
+        self.toogle_fullscreen(True)
         self.init_gpio()
 
     def init_gpio(self):
@@ -243,7 +242,6 @@ class Game:
 
     def show_result(self, page):
         self.create_empty_labels()
-        global len_rezz
         self.images = []
         igrac = ""
         brojac = 0
@@ -262,7 +260,9 @@ class Game:
                 brojac = 0
                 igrac = ""
         hisc.close()
-        len_rezz = len(self.menu_options)
+
+        self.menu_options.reverse()
+
         j = page*6 + 6
         c=r=i=k=0
         for item in self.menu_options:
@@ -294,15 +294,19 @@ class Game:
 
         if(page==0):
             label.configure(text="")
-            label.grid(column=2, row=1, padx=(60,60), pady=(150,150))
+            label.grid(column=2, row=1, padx=(22,22), pady=(80,80))
         else:
             label.configure(image=back_img)
             label.grid(column=2, row=1, padx=(22,22), pady=(80,80))
             self.images.append(back_img)
 
+        self.labels.append(label)
+
+        label = ttk.Label()
+
         if(j>len(self.menu_options)-1):
             label.configure(text="")
-            label.grid(column=3, row=1, padx=(60,60), pady=(150,150))
+            label.grid(column=3, row=1, padx=(22,22), pady=(80,80))
         else:
             label.configure(image=next_img)
             label.grid(column=3, row=1, padx=(22,22), pady=(80,80))

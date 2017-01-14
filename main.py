@@ -110,14 +110,14 @@ def my_callback(channel):
                             current_result_page = 0
                         else:
                             current_result_page = current_result_page - 1
-                        my_game.show_result(current_result_page)
+                            my_game.show_result(current_result_page)
                     elif(key==7):
-                        print "ttt",my_game.len_rezz
-                        if(my_game.len_rezz>current_result_page*6):
+                        if(score_count()>current_result_page*6+6):
                             current_result_page = current_result_page + 1
+                            my_game.show_result(current_result_page)
                         else:
                             current_result_page = current_result_page
-                        my_game.show_result(current_result_page)
+
 
 def play_game(key):
             global answer, last_game_key, game_state, bodovi
@@ -134,6 +134,15 @@ def show_start_menu():
     global game_state
     my_game.show_menu()
     game_state = STATE_SHOWING_MENU
+
+def score_count():
+    hisc=open(SETTINGS_DIR + FILE_SCORE,"r")
+    i = 0
+    for line in hisc:
+        i+=1
+    hisc.close()
+    i = i / 3
+    return i
 
 
 def save_score():
