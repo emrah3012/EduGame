@@ -65,6 +65,19 @@ class Game:
 
         return photo_list
 
+    def make_menu_image(self):
+        photo_list = []
+        self.images = []
+
+        slike = listdir(SETTINGS_DIR + "menu/")
+
+        for i in slike:
+            slika = SETTINGS_DIR + "menu/" + i
+            photo_list.append(slika)
+        photo_list.sort()
+        return photo_list
+
+
     def show_answer(self, answer):
         photo_list = []
         while len(photo_list) < 8:
@@ -77,6 +90,7 @@ class Game:
         self.create_empty_labels()
         c=r=0;
         self.images[:] = []
+
         for img in photo_list:
             photo = self.get_image(img)
             label = ttk.Label()
@@ -92,20 +106,24 @@ class Game:
     def show_menu(self):
         self.create_empty_labels()
         self.images = []
-        menu_options = ["Nova igra", "Rezultati", "Postavke", "Izlaz"]
-        c=r=i=0
-        for item in menu_options:
-            txt = menu_options[i]
-            label = self.labels[i]
-            label.configure(text=txt)
-            label.grid(column=c, row=r, padx=(150,150), pady=(150,150))
+        self.photo_list = self.make_menu_image()
+        self.show_images(self.photo_list)
 
-            i+=1
-            c+=1
 
-            if(c%4==0):
-                  r+=1
-                  c=0
+        #menu_options = ["Nova igra", "Rezultati", "Postavke", "Izlaz"]
+        #c=r=i=0
+        #for item in menu_options:
+            #txt = menu_options[i]
+            #label = self.labels[i]
+            #label.configure(text=txt)
+            #label.grid(column=c, row=r, padx=(150,150), pady=(150,150))
+
+            #i+=1
+            #c+=1
+
+            #if(c%4==0):
+                  #r+=1
+                  #c=0
 
     #def change_label(self, position, c, r, txt, img):
         #label = self.labels[position]
