@@ -41,16 +41,16 @@ class Game:
         GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
     def add_events(self, my_callback):
-        GPIO.add_event_detect(4, GPIO.RISING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(5, GPIO.RISING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(6, GPIO.RISING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(7, GPIO.RISING, callback=my_callback, bouncetime=50)
+        GPIO.add_event_detect(4, GPIO.RISING, callback=my_callback)
+        GPIO.add_event_detect(5, GPIO.RISING, callback=my_callback)
+        GPIO.add_event_detect(6, GPIO.RISING, callback=my_callback)
+        GPIO.add_event_detect(7, GPIO.RISING, callback=my_callback)
 
-        GPIO.add_event_detect(12, GPIO.FALLING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(13, GPIO.FALLING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(19, GPIO.FALLING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(23, GPIO.FALLING, callback=my_callback, bouncetime=50)
-        GPIO.add_event_detect(26, GPIO.FALLING, callback=my_callback, bouncetime=50)
+        GPIO.add_event_detect(12, GPIO.FALLING, callback=my_callback)
+        GPIO.add_event_detect(13, GPIO.FALLING, callback=my_callback)
+        GPIO.add_event_detect(19, GPIO.FALLING, callback=my_callback)
+        GPIO.add_event_detect(23, GPIO.FALLING, callback=my_callback)
+        GPIO.add_event_detect(26, GPIO.FALLING, callback=my_callback)
 
     def make_game_image(self, path):
         photo_list = []
@@ -94,7 +94,7 @@ class Game:
         for img in photo_list:
             photo = self.get_image(img)
             label = ttk.Label()
-            label.grid(column=c,row=r, padx=(22,22), pady=(80,80))
+            label.grid(column=c,row=r, padx=(50,50), pady=(100,100))
             label.configure(image = photo)
             self.labels.append(label)
             self.images.append(photo) # dodatna referenca kako nebi garbage collector uništio sliku
